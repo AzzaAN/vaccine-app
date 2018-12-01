@@ -1,0 +1,158 @@
+
+
+rule Rule_Trans_RecAccessToHospital{
+  description: ""
+  participant(t): "org.vaccine.mynetwork.Family"
+  operation: CREATE
+  resource(v): "org.vaccine.mynetwork.RecAccessToHospital"
+  condition: (v.vaccineRecord.family.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule Rule_Trans_RecAccessToInsurance{
+  description: ""
+  participant(t): "org.vaccine.mynetwork.Family"
+  operation: CREATE
+  resource(v): "org.vaccine.mynetwork.RecAccessToInsurance"
+  condition: (v.vaccineRecord.family.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule Rule_Trans_RecAccessToSchool{
+  description: ""
+  participant(t): "org.vaccine.mynetwork.Family"
+  operation: CREATE
+  resource(v): "org.vaccine.mynetwork.RecAccessToSchool"
+  condition: (v.vaccineRecord.family.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule Rule_Trans_CreateVaccineRecord{
+  description: ""
+  participant: "org.vaccine.mynetwork.HealthAdmin"
+  operation: CREATE
+  resource: "org.vaccine.mynetwork.CreateVaccineRecord"
+  action: ALLOW
+}
+
+rule Rule_Trans_CreateVacDetail{
+  description: ""
+  participant(t): "org.vaccine.mynetwork.Hospital"
+  operation: CREATE
+  resource(v): "org.vaccine.mynetwork.CreateVaccineDetail"
+  condition: (v.vacRec.hospital.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule Rule_Trans_PhysicianSignature{
+  description: ""
+  participant(t): "org.vaccine.mynetwork.Physician"
+  operation: CREATE
+  resource(v): "org.vaccine.mynetwork.PhysicianSignature"
+  condition: (v.detail.physician.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule Rule_Trans_DocNote{
+  description: ""
+  participant(t): "org.vaccine.mynetwork.Doc"
+  operation: CREATE
+  resource(v): "org.vaccine.mynetwork.DocNote"
+  condition: (v.detail.doc.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule Rule_HealthAdmin{
+  description: ""
+  participant: "org.vaccine.mynetwork.HealthAdmin"
+  operation: READ, CREATE
+  resource: "org.vaccine.mynetwork.VaccineRecord"
+  action: ALLOW
+}
+
+rule Rule_Insurance{
+  description: ""
+  participant(t): "org.vaccine.mynetwork.Insurance"
+  operation: READ
+  resource(v): "org.vaccine.mynetwork.VaccineRecord"
+  condition: (v.insurance.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule Rule_School{
+  description: ""
+  participant(t): "org.vaccine.mynetwork.School"
+  operation: READ
+  resource(v): "org.vaccine.mynetwork.VaccineRecord"
+  condition: (v.school.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule Rule_Family{
+  description: ""
+  participant(t): "org.vaccine.mynetwork.Family"
+  operation: READ, UPDATE
+  resource(v): "org.vaccine.mynetwork.VaccineRecord"
+  condition: (v.family.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule Rule_Hospital_Detail{
+  description: ""
+  participant(t): "org.vaccine.mynetwork.Hospital"
+  operation: READ, CREATE
+  resource(v): "org.vaccine.mynetwork.VaccineDetail"
+  condition: (v.vacRec.hospital.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule Rule_Hospital_Record{
+  description: ""
+  participant(t): "org.vaccine.mynetwork.Hospital"
+  operation: READ, UPDATE
+  resource(v): "org.vaccine.mynetwork.VaccineRecord"
+  condition: (v.hospital.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule Rule_Physician {
+  description: ""
+  participant(t): "org.vaccine.mynetwork.Physician"
+  operation: READ, UPDATE
+  resource(v): "org.vaccine.mynetwork.VaccineDetail"
+  condition: (v.physician.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule Rule_Doc {
+  description: ""
+  participant(t): "org.vaccine.mynetwork.Doc"
+  operation: READ, UPDATE
+  resource(v): "org.vaccine.mynetwork.VaccineDetail"
+  condition: (v.doc.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule SystemACL {
+    description: "System ACL to permit all access"
+    participant: "org.hyperledger.composer.system.Participant"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}

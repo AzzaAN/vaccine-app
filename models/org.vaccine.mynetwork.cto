@@ -1,0 +1,78 @@
+
+namespace org.vaccine.mynetwork
+
+abstract participant Member identified by memberId {
+  o String memberId
+  o String name
+}
+participant Doc extends Member{}
+
+participant Physician extends Member{}
+
+participant Family extends Member{}
+
+participant School extends Member{}
+
+participant Insurance extends Member{}
+
+participant Hospital extends Member{}
+
+participant HealthAdmin extends Member{}
+
+asset VaccineRecord identified by vaccineRecordId{
+  o String vaccineRecordId
+ --> Family family
+ --> Hospital hospital optional
+ --> School school optional
+ --> Insurance insurance optional
+ --> VaccineDetail[] vaccineDetails optional
+}
+
+asset VaccineDetail identified by vaccineDetailId{
+ o String vaccineDetailId
+ o String vaccineName 
+ o String note optional
+ o Boolean signed optional
+ --> Physician physician 
+ --> Doc doc
+ --> VaccineRecord vacRec
+}
+
+abstract transaction RecPermissionTrans{
+   --> VaccineRecord vaccineRecord
+}
+
+transaction RecAccessToHospital extends RecPermissionTrans{
+ --> Hospital hospital
+}
+
+transaction RecAccessToInsurance extends RecPermissionTrans{
+ --> Insurance insurance
+}
+
+transaction RecAccessToSchool extends RecPermissionTrans{
+ --> School school
+}
+
+abstract transaction DetailsTrans{
+   --> VaccineDetail detail
+}
+
+transaction DocNote extends DetailsTrans{
+ o String note
+}
+
+transaction PhysicianSignature extends DetailsTrans{
+ o Boolean signed
+}
+
+transaction CreateVaccineRecord{
+  --> Family family
+}
+
+transaction CreateVaccineDetail{
+  o String vaccineName 
+  --> VaccineRecord vacRec
+  --> Physician physician 
+  --> Doc doc
+}
